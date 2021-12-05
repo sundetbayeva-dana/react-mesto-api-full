@@ -1,4 +1,3 @@
-/* eslint no-underscore-dangle: ["error", { "allow": ["foo_", "_bar", _id] }] */
 const User = require('../models/user');
 const { ERROR_CODE, NOT_FOUND_CODE, SERVER_ERROR_CODE } = require('../utils/const');
 
@@ -7,7 +6,7 @@ const createUser = (req, res) => {
   User.create({ name, about, avatar })
     .then((user) => res.status(200).send({ data: user }))
     .catch((err) => {
-      if (err.name === 'ValidationError') {
+      if (err.name === 'ValidationError' || err.name === 'CastError') {
         res.status(ERROR_CODE).send(({ message: ' Переданы некорректные данные при создании' }));
         return;
       }
@@ -18,10 +17,16 @@ const createUser = (req, res) => {
 const getUser = (req, res) => {
   const { userId } = req.params;
   User.findById(userId)
-    .then((user) => res.status(200).send({ data: user }))
-    .catch((err) => {
-      if (err.name === 'CastError') {
+    .then((user) => {
+      if (!user) {
         res.status(NOT_FOUND_CODE).send({ message: 'Пользователь по указанному _id не найден' });
+        return;
+      }
+      res.status(200).send({ data: user });
+    })
+    .catch((err) => {
+      if (err.name === 'ValidationError' || err.name === 'CastError') {
+        res.status(ERROR_CODE).send({ message: ' Переданы некорректные данные при создании' });
         return;
       }
       res.status(SERVER_ERROR_CODE).send({ message: 'На сервере произошла ошибка' });
@@ -44,17 +49,18 @@ const updateAvatar = (req, res) => {
     {
       new: true,
       runValidators: true,
-      upsert: true,
     },
   )
-    .then((updatedAvatar) => res.status(200).send({ data: updatedAvatar }))
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        res.status(ERROR_CODE).send(({ message: ' Переданы некорректные данные при обновлении аватара' }));
+    .then((updatedAvatar) => {
+      if (!updatedAvatar) {
+        res.status(NOT_FOUND_CODE).send({ message: 'Пользователь по указанному _id не найден' });
         return;
       }
-      if (err.name === 'CastError') {
-        res.status(NOT_FOUND_CODE).send({ message: 'Пользователь по указанному _id не найден' });
+      res.status(200).send({ data: updatedAvatar });
+    })
+    .catch((err) => {
+      if (err.name === 'ValidationError' || err.name === 'CastError') {
+        res.status(ERROR_CODE).send(({ message: ' Переданы некорректные данные при обновлении аватара' }));
         return;
       }
       res.status(SERVER_ERROR_CODE).send({ message: 'На сервере произошла ошибка' });
@@ -69,17 +75,18 @@ const updateUser = (req, res) => {
     {
       new: true,
       runValidators: true,
-      upsert: true,
     },
   )
-    .then((user) => res.status(200).send({ data: user }))
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        res.status(ERROR_CODE).send(({ message: ' Переданы некорректные данные при обновлении профиля' }));
+    .then((user) => {
+      if (!user) {
+        res.status(NOT_FOUND_CODE).send({ message: 'Пользователь по указанному _id не найден' });
         return;
       }
-      if (err.name === 'CastError') {
-        res.status(NOT_FOUND_CODE).send({ message: 'Пользователь по указанному _id не найден' });
+      res.status(200).send({ data: user });
+    })
+    .catch((err) => {
+      if (err.name === 'ValidationError' || err.name === 'CastError') {
+        res.status(ERROR_CODE).send(({ message: ' Переданы некорректные данные при обновлении профиля' }));
         return;
       }
       res.status(SERVER_ERROR_CODE).send({ message: 'На сервере произошла ошибка' });

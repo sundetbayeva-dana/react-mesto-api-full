@@ -1,4 +1,3 @@
-/* eslint no-underscore-dangle: ["error", { "allow": ["foo_", "_bar", _id] }] */
 const Card = require('../models/card');
 const { ERROR_CODE, NOT_FOUND_CODE, SERVER_ERROR_CODE } = require('../utils/const');
 
@@ -7,7 +6,7 @@ const createCard = (req, res) => {
   Card.create({ name, link, owner: req.user._id })
     .then((card) => res.status(200).send({ data: card }))
     .catch((err) => {
-      if (err.name === 'ValidationError') {
+      if (err.name === 'ValidationError' || err.name === 'CastError') {
         res.status(ERROR_CODE).send(({ message: ' Переданы некорректные данные при создании карточки' }));
         return;
       }
@@ -26,10 +25,16 @@ const getCards = (req, res) => {
 const deleteCard = (req, res) => {
   const { cardId } = req.params;
   Card.findByIdAndRemove(cardId)
-    .then(() => res.status(200).send('Пост удален'))
-    .catch((err) => {
-      if (err.name === 'CastError') {
+    .then((deletedCard) => {
+      if (!deletedCard) {
         res.status(NOT_FOUND_CODE).send({ message: ' Карточка с указанным _id не найдена' });
+        return;
+      }
+      res.status(200).send('Пост удален');
+    })
+    .catch((err) => {
+      if (err.name === 'ValidationError' || err.name === 'CastError') {
+        res.status(ERROR_CODE).send({ message: 'Переданы некорректные данные для удаления поста' });
         return;
       }
       res.status(SERVER_ERROR_CODE).send({ message: 'На сервере произошла ошибка' });
@@ -43,14 +48,16 @@ const likeCard = (req, res) => {
     { $addToSet: { likes: req.user._id } },
     { new: true },
   )
-    .then((card) => res.status(SERVER_ERROR_CODE).send({ data: card }))
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        res.status(ERROR_CODE).send(({ message: ' Переданы некорректные данные для постановки/снятии лайка' }));
+    .then((card) => {
+      if (!card) {
+        res.status(NOT_FOUND_CODE).send({ message: 'Передан несуществующий _id карточки' });
         return;
       }
-      if (err.name === 'CastError') {
-        res.status(NOT_FOUND_CODE).send({ message: 'Передан несуществующий _id карточки' });
+      res.status(200).send({ data: card });
+    })
+    .catch((err) => {
+      if (err.name === 'ValidationError' || err.name === 'CastError') {
+        res.status(ERROR_CODE).send(({ message: ' Переданы некорректные данные для постановки/снятии лайка' }));
         return;
       }
       res.status(SERVER_ERROR_CODE).send({ message: 'На сервере произошла ошибка' });
@@ -64,14 +71,16 @@ const dislikeCard = (req, res) => {
     { $pull: { likes: req.user._id } },
     { new: true },
   )
-    .then((card) => res.status(SERVER_ERROR_CODE).send({ data: card }))
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        res.status(ERROR_CODE).send(({ message: ' Переданы некорректные данные для постановки/снятии лайка' }));
+    .then((card) => {
+      if (!card) {
+        res.status(NOT_FOUND_CODE).send({ message: 'Передан несуществующий _id карточки' });
         return;
       }
-      if (err.name === 'CastError') {
-        res.status(NOT_FOUND_CODE).send({ message: 'Передан несуществующий _id карточки' });
+      res.status(200).send({ data: card });
+    })
+    .catch((err) => {
+      if (err.name === 'ValidationError' || err.name === 'CastError') {
+        res.status(ERROR_CODE).send(({ message: ' Переданы некорректные данные для постановки/снятии лайка' }));
         return;
       }
       res.status(SERVER_ERROR_CODE).send({ message: 'На сервере произошла ошибка' });

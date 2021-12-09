@@ -24,20 +24,31 @@ const getCards = (req, res) => {
 
 const deleteCard = (req, res) => {
   const { cardId } = req.params;
-  Card.findByIdAndRemove(cardId)
-    .then((deletedCard) => {
-      if (!deletedCard) {
-        res.status(NOT_FOUND_CODE).send({ message: ' Карточка с указанным _id не найдена' });
-        return;
+  console.log(req.user._id);
+  Card.findById(cardId)
+    .then(({ owner }) => {
+      console.log(owner);
+      console.log(owner.toString());
+      if (owner.toString() === req.user._id) {
+        console.log('ura');
+        Card.findByIdAndRemove(cardId)
+          .then((deletedCard) => {
+            if (!deletedCard) {
+              res.status(NOT_FOUND_CODE).send({ message: ' Карточка с указанным _id не найдена' });
+              return;
+            }
+            res.status(200).send('Пост удален');
+          })
+          .catch((err) => {
+            if (err.name === 'ValidationError' || err.name === 'CastError') {
+              res.status(ERROR_CODE).send({ message: 'Переданы некорректные данные для удаления поста' });
+              return;
+            }
+            res.status(SERVER_ERROR_CODE).send({ message: 'На сервере произошла ошибка' });
+          });
+      } else {
+        res.status(NOT_FOUND_CODE).send({ message: ' Нет прав на удаление карточки' });
       }
-      res.status(200).send('Пост удален');
-    })
-    .catch((err) => {
-      if (err.name === 'ValidationError' || err.name === 'CastError') {
-        res.status(ERROR_CODE).send({ message: 'Переданы некорректные данные для удаления поста' });
-        return;
-      }
-      res.status(SERVER_ERROR_CODE).send({ message: 'На сервере произошла ошибка' });
     });
 };
 

@@ -1,9 +1,20 @@
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const { ERROR_CODE, NOT_FOUND_CODE, SERVER_ERROR_CODE } = require('../utils/const');
+const { verifyConst } = require('../utils/const');
 
 const createUser = (req, res) => {
-  const { name, about, avatar } = req.body;
-  User.create({ name, about, avatar })
+  const {
+    name, about, avatar, email, password,
+  } = req.body;
+  bcrypt.hash(password, 10)
+    .then((hash) => {
+      const user = User.create({
+        name, about, avatar, email, password: hash,
+      });
+      return user;
+    })
     .then((user) => res.status(200).send({ data: user }))
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') {
@@ -92,10 +103,40 @@ const updateUser = (req, res) => {
       res.status(SERVER_ERROR_CODE).send({ message: 'На сервере произошла ошибка' });
     });
 };
+
+const login = (req, res) => {
+  const { email, password } = req.body;
+  return User.findUserByCredentials(email, password)
+    .then((user) => {
+      // аутентификация успешна! пользователь в переменной user
+      const token = jwt.sign({ _id: user._id }, verifyConst);
+      // res.send({ token });
+      res.cookie('jwt', token).end();
+    })
+    .catch((err) => {
+      // ошибка аутентификации
+      res
+        .status(401)
+        .send({ message: err.message });
+    });
+};
+
+const getUserInformation = (req, res) => {
+  User.findById(req.user._id)
+    .then((user) => {
+      res.status(200).send({ data: user });
+    })
+    .catch((err) => {
+      res.status(500).send({ message: `ошибка ${err}` });
+    });
+};
+
 module.exports = {
   createUser,
   getUser,
   getAllUsers,
   updateAvatar,
   updateUser,
+  login,
+  getUserInformation,
 };

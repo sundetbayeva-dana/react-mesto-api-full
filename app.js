@@ -1,6 +1,9 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const cookieParser = require('cookie-parser');
 const { NOT_FOUND_CODE } = require('./utils/const');
+const { createUser, login } = require('./controllers/users');
+const auth = require('./middlewares/auth');
 
 mongoose.connect('mongodb://localhost:27017/mestodb', {
   useNewUrlParser: true,
@@ -9,17 +12,16 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
 const { PORT = 3000 } = process.env;
 const app = express();
 
+app.use(cookieParser());
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const getOwner = (req, res, next) => {
-  req.user = {
-    _id: '61a91cdecd0a53e466be3766',
-  };
-  next();
-};
+app.post('/signup', createUser);
+app.post('/signin', login);
 
-app.use(getOwner);
+app.use(auth);
+
 app.use('/', require('./routes/users'));
 app.use('/', require('./routes/cards'));
 

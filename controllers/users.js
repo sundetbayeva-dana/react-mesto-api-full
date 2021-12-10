@@ -28,31 +28,6 @@ const createUser = (req, res, next) => {
     .catch(next);
 };
 
-// const createUser = (req, res, next) => {
-//   const {
-//     name, about, avatar, email, password,
-//   } = req.body;
-//   User.findOne({ email })
-//     .then((user) => {
-//       if (user) {
-//         throw new Conflict('При регистрации указан email, который уже существует на сервере');
-//       }
-//       bcrypt.hash(password, 10)
-//         .then((hash) => {
-//           const newUser = User.create({
-//             name, about, avatar, email, password: hash,
-//           });
-//           return newUser;
-//         })
-//         .then((newUser) => res.status(200).send({ data: newUser }))
-//         .catch(() => {
-//           throw new BadRequest('Переданы некорректные данные в метод создания пользователя');
-//         })
-//         .catch(next);
-//     })
-//     .catch(next);
-// };
-
 const getUser = (req, res, next) => {
   const { userId } = req.params;
   User.findById(userId)

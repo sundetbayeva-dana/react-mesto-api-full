@@ -20,12 +20,15 @@ const createUser = (req, res, next) => {
     })
     .then((newUser) => res.status(200).send({ data: newUser }))
     .catch((err) => {
-      if (err.name === 'MongoError' && err.code === 11000) {
-        throw new Conflict('При регистрации указан email, который уже существует на сервере');
+      if (err.code === 11000) {
+        next(new Conflict('При регистрации указан email, который уже существует на сервере'));
       }
-      throw new BadRequest('Переданы некорректные данные в метод создания пользователя');
-    })
-    .catch(next);
+      if (err.name === 'ValidationError') {
+        next(new BadRequest('Переданы некорректные данные в метод создания пользователя'));
+      } else {
+        next(err);
+      }
+    });
 };
 
 const getUser = (req, res, next) => {
@@ -64,10 +67,13 @@ const updateAvatar = (req, res, next) => {
       }
       res.status(200).send({ data: updatedAvatar });
     })
-    .catch(() => {
-      throw new BadRequest('Переданы некорректные данные в метод обновления аватара пользователя');
-    })
-    .catch(next);
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        next(new BadRequest('Переданы некорректные данные в метод обновления аватара пользователя'));
+      } else {
+        next(err);
+      }
+    });
 };
 
 const updateUser = (req, res, next) => {
@@ -86,10 +92,13 @@ const updateUser = (req, res, next) => {
       }
       res.status(200).send({ data: user });
     })
-    .catch(() => {
-      throw new BadRequest('Переданы некорректные данные в метод обновления профиля пользователя');
-    })
-    .catch(next);
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        next(new BadRequest('Переданы некорректные данные в метод обновления профиля пользователя'));
+      } else {
+        next(err);
+      }
+    });
 };
 
 const login = (req, res, next) => {
@@ -100,9 +109,8 @@ const login = (req, res, next) => {
       res.cookie('jwt', token, { maxAge: 3600000 * 24 * 7, httpOnly: true }).end();
     })
     .catch(() => {
-      throw new Unauthorized('Неправильные почта или пароль');
-    })
-    .catch(next);
+      next(new Unauthorized('Неправильные почта или пароль'));
+    });
 };
 
 const getUserInformation = (req, res, next) => {

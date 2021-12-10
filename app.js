@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const { celebrate, Joi } = require('celebrate');
 const { errors } = require('celebrate');
 const cookieParser = require('cookie-parser');
-const { NOT_FOUND_CODE } = require('./utils/const');
+const NotFoundError = require('./errors/not-found-err');
 const { createUser, login } = require('./controllers/users');
 const auth = require('./middlewares/auth');
 
@@ -23,7 +23,7 @@ app.post('/signup', celebrate({
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30),
     about: Joi.string().min(2).max(30),
-    avatar: Joi.string(),
+    avatar: Joi.string().pattern(/https*:\/\/\w*\.*(\w*-*){1,}\.\w*\D*/),
     email: Joi.string().required().email(),
     password: Joi.string().required(),
   }),
@@ -41,8 +41,8 @@ app.use(auth);
 app.use('/', require('./routes/users'));
 app.use('/', require('./routes/cards'));
 
-app.use('/', (req, res) => {
-  res.status(NOT_FOUND_CODE).send({ message: 'Запрос несуществующей страницы' });
+app.use('/', (req, res, next) => {
+  next(new NotFoundError('Запрос несуществующей страницы'));
 });
 
 app.use(errors());

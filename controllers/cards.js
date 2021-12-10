@@ -7,10 +7,13 @@ const createCard = (req, res, next) => {
   const { name, link } = req.body;
   Card.create({ name, link, owner: req.user._id })
     .then((card) => res.status(200).send({ data: card }))
-    .catch(() => {
-      throw new BadRequest('Переданы некорректные данные в метод создания карточки');
-    })
-    .catch(next);
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        next(new BadRequest('Переданы некорректные данные в метод создания карточки'));
+      } else {
+        next(err);
+      }
+    });
 };
 
 const getCards = (req, res, next) => {
@@ -22,13 +25,13 @@ const getCards = (req, res, next) => {
 const deleteCard = (req, res, next) => {
   const { cardId } = req.params;
   Card.findById(cardId)
-    .then(({ owner }) => {
-      if (owner.toString() === req.user._id) {
+    .then((card) => {
+      if (!card) {
+        throw new NotFoundError('Карточка не найдена');
+      }
+      if (card.owner.toString() === req.user._id) {
         Card.findByIdAndRemove(cardId)
-          .then((deletedCard) => {
-            if (!deletedCard) {
-              throw new NotFoundError('Карточка не найдена');
-            }
+          .then(() => {
             res.status(200).send('Пост удален');
           })
           .catch(next);

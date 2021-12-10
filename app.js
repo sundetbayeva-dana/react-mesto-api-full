@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const { celebrate, Joi } = require('celebrate');
+const validator = require('validator');
 const { errors } = require('celebrate');
 const cookieParser = require('cookie-parser');
 const NotFoundError = require('./errors/not-found-err');
@@ -10,6 +11,13 @@ const auth = require('./middlewares/auth');
 mongoose.connect('mongodb://localhost:27017/mestodb', {
   useNewUrlParser: true,
 });
+
+const validateURL = (value) => {
+  if (!validator.isURL(value, { require_protocol: true })) {
+    throw new Error('Неправильный формат ссылки');
+  }
+  return value;
+};
 
 const { PORT = 3000 } = process.env;
 const app = express();
@@ -23,7 +31,7 @@ app.post('/signup', celebrate({
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30),
     about: Joi.string().min(2).max(30),
-    avatar: Joi.string().pattern(/https*:\/\/\w*\.*(\w*-*){1,}\.\w*\D*/),
+    avatar: Joi.string().custom(validateURL),
     email: Joi.string().required().email(),
     password: Joi.string().required(),
   }),

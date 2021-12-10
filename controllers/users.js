@@ -18,7 +18,13 @@ const createUser = (req, res, next) => {
       });
       return newUser;
     })
-    .then((newUser) => res.status(200).send({ data: newUser }))
+    .then((user) => {
+      res.status(200).send({
+        data: {
+          name: user.name, about: user.about, avatar: user.avatar, email: user.email,
+        },
+      });
+    })
     .catch((err) => {
       if (err.code === 11000) {
         next(new Conflict('При регистрации указан email, который уже существует на сервере'));

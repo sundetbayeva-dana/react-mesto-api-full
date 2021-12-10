@@ -32,7 +32,7 @@ const deleteCard = (req, res, next) => {
       if (card.owner.toString() === req.user._id) {
         Card.findByIdAndRemove(cardId)
           .then(() => {
-            res.status(200).send('Пост удален');
+            res.status(200).send({ message: 'Пост удален' });
           })
           .catch(next);
       } else {

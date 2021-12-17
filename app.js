@@ -7,6 +7,8 @@ const cookieParser = require('cookie-parser');
 const NotFoundError = require('./errors/not-found-err');
 const { createUser, login } = require('./controllers/users');
 const auth = require('./middlewares/auth');
+const { requestLogger, errorLogger } = require('./middlewares/logger');
+const cors = require('./middlewares/cors');
 
 mongoose.connect('mongodb://localhost:27017/mestodb', {
   useNewUrlParser: true,
@@ -45,9 +47,14 @@ app.post('/signin', celebrate({
 }), login);
 
 app.use(auth);
+app.use(cors);
+
+app.use(requestLogger);
 
 app.use('/', require('./routes/users'));
 app.use('/', require('./routes/cards'));
+
+app.use(errorLogger);
 
 app.use('/', (req, res, next) => {
   next(new NotFoundError('Запрос несуществующей страницы'));

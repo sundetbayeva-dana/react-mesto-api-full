@@ -2,7 +2,6 @@ const express = require('express');
 const mongoose = require('mongoose');
 const { celebrate, Joi } = require('celebrate');
 const validator = require('validator');
-// const cors = require('cors');
 const { errors } = require('celebrate');
 const cookieParser = require('cookie-parser');
 const cors = require('./middlewares/cors');
@@ -25,19 +24,6 @@ const validateURL = (value) => {
 const { PORT = 3000 } = process.env;
 const app = express();
 app.use(cors);
-
-// const corsOptions = {
-//   origin: [
-//     'https://mestogram.frontend.nomoredomains.rocks',
-//     'http://mestogram.frontend.nomoredomains.rocks',
-//     'http://localhost:3000',
-//     'https://localhost:3000',
-//     'localhost:3000',
-//   ],
-//   optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
-// };
-
-// app.use(cors(corsOptions));
 
 app.use(cookieParser());
 
@@ -77,8 +63,6 @@ app.use('/', (req, res, next) => {
 app.use(errors());
 
 app.use((err, req, res, next) => {
-  console.log('aaav');
-  // console.log(req.headers);
   const { statusCode = 500, message } = err;
   res
     .status(statusCode)

@@ -23,12 +23,12 @@ const validateURL = (value) => {
 
 const { PORT = 3000 } = process.env;
 const app = express();
-app.use(cors);
-
 app.use(cookieParser());
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+app.use(cors);
 
 app.post('/signup', celebrate({
   body: Joi.object().keys({

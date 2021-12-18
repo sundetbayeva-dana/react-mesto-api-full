@@ -23,6 +23,7 @@ const validateURL = (value) => {
 
 const { PORT = 3000 } = process.env;
 const app = express();
+app.use(cors);
 
 app.use(cookieParser());
 
@@ -47,7 +48,6 @@ app.post('/signin', celebrate({
 }), login);
 
 app.use(auth);
-app.use(cors);
 
 app.use(requestLogger);
 

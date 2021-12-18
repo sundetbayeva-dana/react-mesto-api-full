@@ -1,11 +1,13 @@
 const allowedCors = [
   'https://mestogram.frontend.nomoredomains.rocks',
   'http://mestogram.frontend.nomoredomains.rocks',
-  // 'localhost:3000',
+  'localhost:3000',
 ];
 module.exports = (req, res, next) => {
   const { origin } = req.headers;
+  console.log(origin);
   const { method } = req;
+  console.log(method);
   const DEFAULT_ALLOWED_METHODS = 'GET,HEAD,PUT,PATCH,POST,DELETE';
   const requestHeaders = req.headers['access-control-request-headers'];
   if (allowedCors.includes(origin)) {
@@ -16,5 +18,5 @@ module.exports = (req, res, next) => {
       return res.end();
     }
   }
-  return next();
+  next();
 };

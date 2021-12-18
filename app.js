@@ -24,11 +24,20 @@ const validateURL = (value) => {
 
 const { PORT = 3000 } = process.env;
 const app = express();
-app.use(cors());
+// app.use(cors());
 
-app.get('/', function (req, res, next) {
-  res.json({msg: 'This is CORS-enabled for all origins!'})
-})
+const corsOptions = {
+  origin: [
+    'https://mestogram.frontend.nomoredomains.rocks',
+    'http://mestogram.frontend.nomoredomains.rocks',
+    'http://localhost:3000',
+    'https://localhost:3000',
+    'localhost:3000',
+  ],
+  optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
+};
+
+app.get('/', cors(corsOptions));
 
 app.use(cookieParser());
 

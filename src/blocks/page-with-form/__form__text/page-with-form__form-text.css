@@ -1,0 +1,16 @@
+.page-with-form__form-text {
+    border: none;
+    background-color: #000;
+    border-bottom: 2px solid rgb(204, 204, 204);
+    box-sizing: border-box;
+    width: 100%;
+    font-family: 'Inter', Arial, sans-serif;
+    height: 27px;
+    padding: 0;
+    margin: 0 0 30px;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 17px;
+    color: #FFFFFF;
+}

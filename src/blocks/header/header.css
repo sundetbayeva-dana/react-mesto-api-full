@@ -1,0 +1,19 @@
+.header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 45px 0 0;
+    margin: 0 auto;
+    width: 100%;
+    border: 1px solid rgba(84,84,84, .7);
+    border-top: hidden;
+    border-left-style: hidden;
+    border-right-style: hidden;
+}
+
+@media screen and (max-width: 767px) {
+    .header {
+        width: 100%;
+        margin: 28px 0 0;
+    }
+}

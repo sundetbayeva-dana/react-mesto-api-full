@@ -1,0 +1,5 @@
+.page-with-form__info-cont {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}

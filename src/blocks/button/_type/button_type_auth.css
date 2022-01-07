@@ -1,0 +1,17 @@
+.button_type_auth {
+    height: 50px;
+    width: 100%;
+    background: #FFFFFF;
+    border-radius: 2px;
+    font-family: 'Inter', Arial, sans-serif;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 18px;
+    line-height: 22px;
+    text-align: center;
+    margin: 186px 0 15px;
+    border-radius: 2px;
+}
+.button_type_auth:hover {
+opacity: .85
+}

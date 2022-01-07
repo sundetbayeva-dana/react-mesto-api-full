@@ -1,0 +1,5 @@
+.page-with-form__container {
+    width: calc(100% - 2*261px);
+    margin: 0 auto;
+    align-items: center
+}

@@ -1,0 +1,16 @@
+.button_type_edit {
+    display: flex;
+    width: 24px;
+    height: 24px;
+    border: solid #fff 1px;
+    align-self: center;
+    margin: 0 10px 0 18px;
+    background-image: url(./../../../images/pen.svg);
+}
+@media screen and (max-width: 767px) {
+    .button_type_edit {
+        margin: 0 0 0 10px;
+        width: 18px;
+        height: 18px;             
+    }
+}

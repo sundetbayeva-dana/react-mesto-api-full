@@ -1,0 +1,13 @@
+.page-with-form__info-text-link {
+    font-family: 'Inter', Arial, sans-serif;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 17px;
+    color: #FFFFFF;
+    text-decoration: none;
+}
+
+.page-with-form__info-text-link:hover {
+    opacity: 0.6;
+}

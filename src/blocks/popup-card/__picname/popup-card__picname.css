@@ -1,0 +1,9 @@
+.popup-card__picname {
+    font-family: Inter;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 12px;
+    line-height: 15px;
+    color: #fff;
+    margin: 10px 0 0;
+}

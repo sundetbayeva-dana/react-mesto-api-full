@@ -1,0 +1,17 @@
+.profile__info-activity {
+    font-family: 'Inter', Arial, Helvetica, sans-serif;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 18px;
+    line-height: 22px;
+    margin: 16px 0 0;    
+}
+@media screen and (max-width: 1023px) {
+    .profile__info-activity {
+        width: 100%;
+        text-align: center;
+        margin: 14px 0 0;
+        font-size: 14px;
+        line-height: 17px;        
+    }
+}

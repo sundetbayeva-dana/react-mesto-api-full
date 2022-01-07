@@ -108,7 +108,7 @@ const updateUser = (req, res, next) => {
 };
 
 const login = (req, res, next) => {
-  const { email, password } = req.body;
+  const { password, email } = req.body;
   return User.findUserByCredentials(email, password)
     .then((user) => {
       const token = jwt.sign({ _id: user._id }, verifyConst, { expiresIn: '7d' });

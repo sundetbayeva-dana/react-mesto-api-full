@@ -109,15 +109,15 @@ const updateUser = (req, res, next) => {
 
 const login = (req, res, next) => {
   const { email, password } = req.body;
-  console.log(email);
-  console.log(password);
   return User.findUserByCredentials(email, password)
     .then((user) => {
       const token = jwt.sign({ _id: user._id }, verifyConst, { expiresIn: '7d' });
-      // res.cookie('jwt', token, { maxAge: 3600000 * 24 * 7, httpOnly: true }).end();
       res.cookie('jwt', token, { maxAge: 3600000 * 24 * 7, httpOnly: true });
-      res.status(200).send({ data: user });
-      return user;
+      res.status(200).send({
+        data: {
+          name: user.name, about: user.about, avatar: user.avatar, email: user.email,
+        },
+      });
     })
     .catch(() => {
       next(new Unauthorized('Неправильные почта или пароль'));

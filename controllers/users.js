@@ -109,7 +109,7 @@ const updateUser = (req, res, next) => {
 
 const login = (req, res, next) => {
   const { password, email } = req.body;
-  return User.findUserByCredentials(email, password)
+  return User.findUserByCredentials(password, email)
     .then((user) => {
       const token = jwt.sign({ _id: user._id }, verifyConst, { expiresIn: '7d' });
       res.cookie('jwt', token, { maxAge: 3600000 * 24 * 7, httpOnly: true }).end();

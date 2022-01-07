@@ -1,8 +1,8 @@
 const allowedCors = [
-  'http://mestogram.frontend.nomoredomains.rocks',
-  'https://mestogram.frontend.nomoredomains.rocks',
-  'http://localhost:3000',
-  'https://localhost:3000',
+  'http://mestogram.frontend.nomoredomains.rocks/',
+  'https://mestogram.frontend.nomoredomains.rocks/',
+  'http://localhost:3000/',
+  'https://localhost:3000/',
 ];
 
 // app.use(function (req, res, next) {

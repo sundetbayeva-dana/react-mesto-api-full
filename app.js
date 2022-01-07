@@ -50,6 +50,7 @@ app.post('/signin', celebrate({
 app.use(auth);
 
 app.use('/', require('./routes/users'));
+
 app.use('/', require('./routes/cards'));
 
 app.use(errorLogger);

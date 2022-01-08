@@ -17,7 +17,7 @@ node_modules
 .bashrc
 .cache
 .dbshell
-file.env
+*file.env
 .gitconfig
 .gitignore
 .local

@@ -13,3 +13,16 @@ node_modules
 .DS_Store
 .idea
 .vscode
+.bash_logout
+.bashrc
+.cache
+.dbshell
+file.env
+.gitconfig
+.gitignore
+.local
+.mongorc.js
+.pm2
+.profile
+.ssh
+.viminfo

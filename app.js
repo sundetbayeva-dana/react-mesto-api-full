@@ -52,6 +52,10 @@ app.use(auth);
 app.use('/', require('./routes/users'));
 app.use('/', require('./routes/cards'));
 
+app.get('/signout', (req, res) => {
+  res.status(200).clearCookie('jwt').send({ message: 'Выход' });
+});
+
 app.use(errorLogger);
 
 app.use('/', (req, res, next) => {
